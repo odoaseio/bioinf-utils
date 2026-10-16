@@ -28,16 +28,17 @@ def filter_fastq(
     """
     output_path = helpers.fastq.prepare_output_path(output_fastq)
 
-    with (open(input_fastq) as input_file,
-          open(output_path, mode='w') as output_file):
-        while True:
-            record = helpers.fastq.read_fastq_record(input_file)
-            if record is None:
-                break
-            _, seq, _, quality_string = record
+    with open(input_fastq) as input_file:
+        with open(output_path, mode='w') as output_file:
+            while True:
+                record = helpers.fastq.read_fastq_record(input_file)
+                if record is None:
+                    break
+                _, seq, _, quality_string = record
 
-            if (helpers.fastq.passes_gc_filter(seq, gc_bounds)
-                    and helpers.fastq.passes_length_filter(seq, length_bounds)
-                    and helpers.fastq.passes_quality_filter(
-                        quality_string, quality_threshold)):
-                helpers.fastq.write_fastq_record(output_file, record)
+                if (helpers.fastq.passes_gc_filter(seq, gc_bounds)
+                        and helpers.fastq.passes_length_filter(
+                            seq, length_bounds)
+                        and helpers.fastq.passes_quality_filter(
+                            quality_string, quality_threshold)):
+                    helpers.fastq.write_fastq_record(output_file, record)
